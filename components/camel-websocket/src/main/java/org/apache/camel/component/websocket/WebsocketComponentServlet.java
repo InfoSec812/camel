@@ -33,6 +33,8 @@ public class WebsocketComponentServlet extends WebSocketServlet {
     private final NodeSynchronization sync;
     private WebsocketConsumer consumer;
 
+    private boolean passRequest = false;
+
     private ConcurrentMap<String, WebsocketConsumer> consumers = new ConcurrentHashMap<String, WebsocketConsumer>();
     private Map<String, WebSocketFactory> socketFactory;
 
@@ -69,6 +71,9 @@ public class WebsocketComponentServlet extends WebSocketServlet {
         }
 
         WebSocketFactory factory = socketFactory.get(protocolKey);
+        if (passRequest) {
+            consumer.setRequest(request);
+        }
         return factory.newInstance(request, protocolKey, sync, consumer);
     }
 
@@ -78,5 +83,13 @@ public class WebsocketComponentServlet extends WebSocketServlet {
 
     public void setSocketFactory(Map<String, WebSocketFactory> socketFactory) {
         this.socketFactory = socketFactory;
+    }
+
+    /**
+     * Set to {@code true} if the {@link HttpServletRequest} object should be included in the {@link org.apache.camel.Exchange}
+     * @param passRequest
+     */
+    public void setPassRequest(boolean passRequest) {
+        this.passRequest = passRequest;
     }
 }

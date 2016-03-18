@@ -21,9 +21,13 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultConsumer;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class WebsocketConsumer extends DefaultConsumer implements WebsocketProducerConsumer {
 
     private final WebsocketEndpoint endpoint;
+
+    private HttpServletRequest request = null;
 
     public WebsocketConsumer(WebsocketEndpoint endpoint, Processor processor) {
         super(endpoint, processor);
@@ -50,6 +54,14 @@ public class WebsocketConsumer extends DefaultConsumer implements WebsocketProdu
         return endpoint.getPath();
     }
 
+    /**
+     * The {@link HttpServletRequest} object if the option was requested
+     * @param request
+     */
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
     public void sendMessage(final String connectionKey, final String message) {
         sendMessage(connectionKey, (Object)message);
     }
@@ -61,6 +73,9 @@ public class WebsocketConsumer extends DefaultConsumer implements WebsocketProdu
         // set header and body
         exchange.getIn().setHeader(WebsocketConstants.CONNECTION_KEY, connectionKey);
         exchange.getIn().setBody(message);
+        if (request!=null) {
+            exchange.getIn().setHeader("request", request);
+        }
 
         // send exchange using the async routing engine
         getAsyncProcessor().process(exchange, new AsyncCallback() {

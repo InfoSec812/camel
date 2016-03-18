@@ -206,6 +206,7 @@ public class WebsocketComponent extends UriEndpointComponent {
             if (prodcon instanceof WebsocketConsumer) {
                 WebsocketConsumer consumer = WebsocketConsumer.class.cast(prodcon);
                 if (servlet.getConsumer() == null) {
+                    servlet.setPassRequest(endpoint.isPassRequest());
                     servlet.setConsumer(consumer);
                 }
                 // register the consumer here

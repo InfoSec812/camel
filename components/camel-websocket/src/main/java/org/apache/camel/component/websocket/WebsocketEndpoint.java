@@ -79,6 +79,9 @@ public class WebsocketEndpoint extends DefaultEndpoint {
     @UriParam(defaultValue = "13")
     private Integer minVersion;
 
+    @UriParam
+    private boolean passRequest;
+
     public WebsocketEndpoint(WebsocketComponent component, String uri, String resourceUri, Map<String, Object> parameters) {
         super(uri, component);
         this.resourceUri = resourceUri;
@@ -334,5 +337,19 @@ public class WebsocketEndpoint extends DefaultEndpoint {
      */
     public void setResourceUri(String resourceUri) {
         this.resourceUri = resourceUri;
+    }
+
+    public boolean isPassRequest() {
+        return passRequest;
+    }
+
+    /**
+     * Enable passing the {@link javax.servlet.http.HttpServletRequest} as a header to the
+     * {@link org.apache.camel.Exchange}
+     * @param passRequest {@code true} if you would like to have access to the
+     *          {@link javax.servlet.http.HttpServletRequest} object inside of the route.
+     */
+    public void setPassRequest(boolean passRequest) {
+        this.passRequest = passRequest;
     }
 }
